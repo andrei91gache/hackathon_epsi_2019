@@ -1,5 +1,6 @@
 var ctx1 = document.getElementById('production_actuelle').getContext('2d');
 
+
 new Chart(ctx1, {
     type: 'line',
     // The data for our dataset
@@ -30,3 +31,5 @@ new Chart(ctx1, {
         }
     }
 });
+
+
