@@ -12,4 +12,4 @@
 require __DIR__.'/../vendor/autoload.php';
 
 $production = new \HackathonEpsi\src\bll\GetProductionEnergie();
-echo json_encode($production->read());
+echo json_encode(array_reverse($production->read()));
