@@ -46,6 +46,7 @@ class FileParser
     {
         if (!empty($this->data_from_meteo) && count($this->data_from_meteo) > 0){
             $cnx = new ConnectionDB();
+            $cnx->getConnection()->query("TRUNCATE TABLE meteo")->execute();
             foreach ($this->data_from_meteo as $key => $item){
                 if (is_array($item)){
 
@@ -113,6 +114,7 @@ class FileParser
 
         if (!empty($this->data_from_rte) && count($this->data_from_rte) > 0){
             $cnx = new ConnectionDB();
+            $cnx->getConnection()->query("TRUNCATE TABLE production_solaire")->execute();
             $datas = array_slice($this->data_from_rte, 1);
             foreach ($datas as $key => $item){
                 $hour_sunrise = strtotime(date_sunrise(time(), SUNFUNCS_RET_STRING, 47.13, 1.33, 79, 1));

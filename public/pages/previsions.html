@@ -42,32 +42,83 @@
 <script type="text/javascript" src="../libs/bootstrap-4.0.0/dist/js/bootstrap.min.js"></script>
 <script src="../libs/node_modules/chart.js/dist/Chart.js"></script>
 <script type="text/javascript">
-    var ctx2 = document.getElementById('prevision_production').getContext('2d');
-    new Chart(ctx2, {
-        type: 'line',
-        // The data for our dataset
-        data: {
-            labels: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'] ,
-            datasets: [
-                {
-                    label: "Prevision de production d'energie solaire",
-                    borderColor: "#ff9900",
-                    data: [15,0,8,155,22,35,78]
-                },
-            ]
-        },
-        // Configuration options go here
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        suggestedMin: 0,
-                        suggestedMax: 500
-                    }
-                }]
+    getProduction();
+
+    function getProduction() {
+
+        var xhr = getXMLHttpRequest();
+        xhr.open("GET", "../../api/getPrevisionProduction.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    let response = JSON.parse(this.response);
+
+                    var dates = [];
+                    var quantite = [];
+                    response.forEach(function (x) {
+                        dates.push(x['date_simple']);
+                        quantite.push(x['prev_prod']);
+                    });
+
+                    var ctx2 = document.getElementById('prevision_production').getContext('2d');
+
+
+                    new Chart(ctx2, {
+                        type: 'line',
+                        // The data for our dataset
+                        data: {
+                            labels: dates ,
+                            datasets: [
+                                {
+                                    label: "Prevision Production d'energie solaire",
+                                    borderColor: "#ff9900",
+                                    data: quantite
+                                },
+                            ]
+                        },
+                        // Configuration options go here
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        suggestedMin: 0,
+                                        suggestedMax: 500
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                }else {
+                    console.log("error");
+                }
             }
         }
-    });
+
+    }
+
+    //Initializare XHR object
+    function getXMLHttpRequest() {
+        var xhr = null;
+
+        if (window.XMLHttpRequest || window.ActiveXObject) {
+            if (window.ActiveXObject) {
+                try {
+                    xhr = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch(e) {
+                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+            } else {
+                xhr = new XMLHttpRequest();
+            }
+        } else {
+            alert("Votre navigateur ne supporte pas des requetes AJAX");
+            return null;
+        }
+
+        return xhr;
+    }
 </script>
 </body>
 </html>
