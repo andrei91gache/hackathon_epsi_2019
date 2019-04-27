@@ -48,10 +48,17 @@ class FileParser
             $cnx = new ConnectionDB();
             foreach ($this->data_from_meteo as $key => $item){
                 if (is_array($item)){
-                    $this->saveIntoMeteoTable($cnx, [
-                        $item['nebulosite']['totale'],
-                        $key
-                    ]);
+
+                    $hour = explode(' ',$key);
+                    $hour_sunrise = strtotime(date_sunrise(time(), SUNFUNCS_RET_STRING, 47.13, 1.33, 79, 1));
+                    $hour_sunset = strtotime(date_sunset(time(), SUNFUNCS_RET_STRING, 47.13, 1.33, 101, 1));
+
+                    if ($hour_sunrise < strtotime($hour[1]) && $hour_sunset > strtotime($hour[1])){
+                        $this->saveIntoMeteoTable($cnx, [
+                            $item['nebulosite']['totale'],
+                            $key
+                        ]);
+                    }
                 }
             }
 
@@ -62,9 +69,10 @@ class FileParser
 
     private function saveIntoMeteoTable(ConnectionDB $connectionDB, $data){
         $db = $connectionDB->getConnection();
-        $stmt =  $db->prepare("INSERT INTO meteo (nebulosite_totale, date_add) VALUES (:nebulosite_totale, :date_add)");
+        $stmt =  $db->prepare("INSERT INTO meteo (nebulosite_totale, date_time, date_simple) VALUES (:nebulosite_totale, :date_time, :date_simple)");
         $stmt->bindParam(':nebulosite_totale', $data[0]);
-        $stmt->bindParam(':date_add', $data[1]);
+        $stmt->bindParam(':date_time', $data[1]);
+        $stmt->bindParam(':date_simple', $data[1]);
         $stmt->execute();
     }
 
@@ -107,12 +115,16 @@ class FileParser
             $cnx = new ConnectionDB();
             $datas = array_slice($this->data_from_rte, 1);
             foreach ($datas as $key => $item){
+                $hour_sunrise = strtotime(date_sunrise(time(), SUNFUNCS_RET_STRING, 47.13, 1.33, 79, 1));
+                $hour_sunset = strtotime(date_sunset(time(), SUNFUNCS_RET_STRING, 47.13, 1.33, 101, 1));
+
+                if ($hour_sunrise < strtotime($item['D']) && $hour_sunset > strtotime($item['D'])) {
 
                     $this->saveIntoProductionSolaireTable($cnx, [
                         $item['I'],
-                        $item['C'].' '.$item['D'],
+                        $item['C'] . ' ' . $item['D'],
                     ]);
-
+                }
             }
 
         }else{
@@ -123,9 +135,10 @@ class FileParser
     private function saveIntoProductionSolaireTable(ConnectionDB $connectionDB, $data)
     {
         $db = $connectionDB->getConnection();
-        $stmt =  $db->prepare("INSERT INTO production_solaire (quantite_produite, date_add) VALUES (:quantite_produite, :date_add)");
+        $stmt =  $db->prepare("INSERT INTO production_solaire (quantite_produite, date_time, date_simple) VALUES (:quantite_produite, :date_time, :date_simple)");
         $stmt->bindParam(':quantite_produite', $data[0]);
-        $stmt->bindParam(':date_add', $data[1]);
+        $stmt->bindParam(':date_time', $data[1]);
+        $stmt->bindParam(':date_simple', $data[1]);
         $stmt->execute();
     }
 }

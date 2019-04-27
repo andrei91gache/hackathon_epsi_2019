@@ -22,7 +22,7 @@ class GetProductionEnergie
     {
         $db = new ConnectionDB();
         $cnx = $db->getConnection();
-        $res  = $cnx->query("SELECT quantite_produite, date_add FROM production_solaire  ORDER BY date_add DESC LIMIT 7")->fetchAll();
+        $res  = $cnx->query("SELECT quantite_produite, date_time FROM production_solaire  ORDER BY date_time DESC LIMIT 7")->fetchAll();
         return $res;
     }
 }

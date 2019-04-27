@@ -10,7 +10,6 @@
  */
 
 require __DIR__.'/../vendor/autoload.php';
-
 $file_parser = new \HackathonEpsi\src\bll\FileParser();
 //Download file from Meteo
 $file_parser->httpRequestGetJsonFromAPIMeteo();
