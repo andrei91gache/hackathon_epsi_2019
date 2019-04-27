@@ -41,6 +41,91 @@
     <script type="text/javascript" src="public/libs/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="public/libs/bootstrap-4.0.0/dist/js/bootstrap.min.js"></script>
     <script src="public/libs/node_modules/chart.js/dist/Chart.js"></script>
-    <script type="text/javascript" src="public/js/main.js"></script>
+    <script type="text/javascript" >
+
+        getProduction();
+
+        function getProduction() {
+
+            var xhr = getXMLHttpRequest();
+            xhr.open("GET", "api/getProduction.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        let response = JSON.parse(this.response);
+
+                        var dates = [];
+                        var quantite = [];
+                        response.forEach(function (x) {
+                            dates.push(x['date_add']);
+                            quantite.push(x['quantite_produite']);
+                        });
+
+                        console.log(quantite);
+                        var ctx1 = document.getElementById('production_actuelle').getContext('2d');
+
+
+                        new Chart(ctx1, {
+                            type: 'line',
+                            // The data for our dataset
+                            data: {
+                                labels: dates ,
+                                datasets: [
+                                    {
+                                        label: "Production d'energie solaire",
+                                        borderColor: "#ff9900",
+                                        data: quantite
+                                    },
+                                    {
+                                        label: "Consumation d'energie solaire",
+                                        borderColor: "#ff0a10",
+                                        data: [25,88,30,0,2,12,3]
+                                    },
+                                ]
+                            },
+                            // Configuration options go here
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            suggestedMin: 0,
+                                            suggestedMax: 500
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    }else {
+                        console.log("error");
+                    }
+                }
+            }
+
+        }
+
+        //Initializare XHR object
+        function getXMLHttpRequest() {
+            var xhr = null;
+
+            if (window.XMLHttpRequest || window.ActiveXObject) {
+                if (window.ActiveXObject) {
+                    try {
+                        xhr = new ActiveXObject("Msxml2.XMLHTTP");
+                    } catch(e) {
+                        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                } else {
+                    xhr = new XMLHttpRequest();
+                }
+            } else {
+                alert("Votre navigateur ne supporte pas des requetes AJAX");
+                return null;
+            }
+
+            return xhr;
+        }
+    </script>
 </body>
 </html>

@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'HackathonEpsi\\src\\bll\\FileParser' => $baseDir . '/src/bll/FileParser.php',
+    'HackathonEpsi\\src\\bll\\GetProductionEnergie' => $baseDir . '/src/bll/GetProductionEnergie.php',
     'HackathonEpsi\\src\\dal\\ConnectionDB' => $baseDir . '/src/dal/ConnectionDB.php',
 );

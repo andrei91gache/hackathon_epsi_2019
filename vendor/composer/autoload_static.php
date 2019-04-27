@@ -107,6 +107,7 @@ class ComposerStaticInit0f6497829b6fa0900f329dc57b605e5b
 
     public static $classMap = array (
         'HackathonEpsi\\src\\bll\\FileParser' => __DIR__ . '/../..' . '/src/bll/FileParser.php',
+        'HackathonEpsi\\src\\bll\\GetProductionEnergie' => __DIR__ . '/../..' . '/src/bll/GetProductionEnergie.php',
         'HackathonEpsi\\src\\dal\\ConnectionDB' => __DIR__ . '/../..' . '/src/dal/ConnectionDB.php',
     );
 
